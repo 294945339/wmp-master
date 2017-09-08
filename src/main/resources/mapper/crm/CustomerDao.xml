@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.crm.dao.CustomerDao">
+
+    <select id="queryObject" resultType="io.dj.modules.crm.domain.CustomerDomain">
+        select * from crm_customer where id = #{value} and status = 0
+    </select>
+
+    <select id="queryList" resultType="io.dj.modules.crm.domain.CustomerDomain">
+        select d.*
+        from crm_customer d
+        <where>
+            d.status = 0
+            <if test="crmId != null and crmId.trim() != ''">
+                and d.crm_id = #{crmId}
+            </if>
+            <if test="name != null and name.trim() != ''">
+                and d.name like concat('%',#{name},'%')
+            </if>
+        </where>
+        <if test="offset != null and limit != null">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="queryTotal" parameterType="map" resultType="int">
+        select count(*) from crm_customer where status = 0
+        <if test="key != null and key.trim() != ''">
+            and key like concat('%',#{key},'%')
+        </if>
+    </select>
+
+    <insert id="save" parameterType="io.dj.modules.crm.domain.CustomerDomain" useGeneratedKeys="true" keyProperty="id">
+        insert into crm_customer
+        (
+        status,
+        sex,
+        crm_id,
+        name,
+        company,
+        dep_name,
+        create_time
+        )
+        values
+        (
+        #{status},
+        #{sex},
+        #{crmId},
+        #{name},
+        #{company.id},
+        #{depName},
+        #{createTime}
+        )
+    </insert>
+
+    <update id="update" parameterType="io.dj.modules.crm.domain.CustomerDomain">
+        update crm_customer
+        <set>
+            <if test="status != null">status = #{status}, </if>
+            <if test="sex != null">sex = #{sex}, </if>
+            <if test="crmId != null">crm_id = #{crm_id},</if>
+            <if test="name != null">name = #{name}, </if>
+            <if test="company.id != null">company = #{company.id}, </if>
+            <if test="depName != null">dep_name = #{depName}, </if>
+            <if test="updateTime != null">update_time = #{updateTime}, </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="delete">
+        update crm_customer set status = 1 where id = #{value}
+    </update>
+
+</mapper>

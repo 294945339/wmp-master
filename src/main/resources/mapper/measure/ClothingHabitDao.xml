@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.measure.dao.ClothingHabitDao">
+
+    <resultMap id="clothingHabitMap" type="io.dj.modules.measure.domain.ClothingHabitDomain">
+        <id column="id" property="id"/>
+        <result column="body_value_ids" property="bodyValueIds" javaType="long" typeHandler="io.dj.common.utils.ArrayTypeHandler"/>
+    </resultMap>
+
+    <sql id="clothingHabitColumns">
+        d.id,
+        d.name,
+        d.body_value_ids,
+        d.status
+    </sql>
+
+    <select id="queryObject" resultMap="clothingHabitMap">
+        select
+        <include refid="clothingHabitColumns"/>
+        from measure_clothing_habit AS d
+        where d.id = #{value} and d.status = 0
+    </select>
+
+    <select id="queryList" resultMap="clothingHabitMap">
+        select
+        <include refid="clothingHabitColumns"/>
+        from measure_clothing_habit d
+        <where>
+            d.status = 0
+            <if test="name != null and name.trim() != ''">
+                and d.name like concat('%',#{name},'%')
+            </if>
+        </where>
+        <if test="offset != null and limit != null">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="queryTotal" parameterType="map" resultType="int">
+        select count(*) from measure_clothing_habit where status = 0
+        <if test="key != null and key.trim() != ''">
+            and key like concat('%',#{key},'%')
+        </if>
+    </select>
+
+    <insert id="save" parameterType="io.dj.modules.measure.domain.ClothingHabitDomain" useGeneratedKeys="true" keyProperty="id">
+        insert into measure_clothing_habit
+        (
+        status,
+        create_time,
+        name,
+        body_value_ids
+        )
+        values
+        (
+        #{status},
+        #{createTime},
+        #{name},
+        #{bodyValueIds, jdbcType=ARRAY, typeHandler=io.dj.common.utils.ArrayTypeHandler}
+        )
+    </insert>
+
+    <update id="update" parameterType="io.dj.modules.measure.domain.ClothingHabitDomain">
+        update measure_clothing_habit
+        <set>
+            <if test="updateTime != null">update_time = #{updateTime}, </if>
+            <if test="name != null">name = #{name}, </if>
+            <if test="bodyValueIds != null">body_value_ids = #{bodyValueIds, jdbcType=ARRAY, typeHandler=io.dj.common.utils.ArrayTypeHandler}, </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="delete">
+        update measure_clothing_habit set status = 1 where id = #{value}
+    </update>
+
+</mapper>

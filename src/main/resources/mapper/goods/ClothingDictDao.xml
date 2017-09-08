@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.ClothingDictDao">
+
+	<select id="queryObject" resultType="io.dj.modules.goods.domain.ClothingDictDomain">
+		select * from goods_clothing_dict where id = #{value} and status = 0
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.goods.domain.ClothingDictDomain">
+		select d.*
+		from goods_clothing_dict d
+		<where>
+			d.status = 0
+			<if test="name != null and name.trim() != ''">
+				and d.name like concat('%',#{name},'%')
+			</if>
+			<if test="sex != null and sex.trim() != ''">
+				and d.sex = #{sex}
+			</if>
+			<if test="typeName != null and typeName.trim() != ''">
+				and d.type_name = #{typeName}
+			</if>
+			<if test="type != null and type.trim() != ''">
+				and d.type = #{type}
+			</if>
+			<if test="code != null and code.trim() != ''">
+				and d.code = #{code}
+			</if>
+		</where>
+		order by d.id asc
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from goods_clothing_dict where status = 0
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.goods.domain.ClothingDictDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into goods_clothing_dict
+		(
+			status,
+			create_time,
+			create_by,
+			name,
+			code,
+			type,
+			can_update,
+			sort,
+			sex,
+			priority,
+			type_name,
+			remarks
+		)
+		values
+		(
+			#{status},
+			#{createTime},
+			#{createBy},
+			#{name},
+			#{code},
+			#{type},
+			#{canUpdate},
+			#{sort},
+			#{sex},
+			#{priority},
+			#{typeName},
+			#{remarks}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.goods.domain.ClothingDictDomain">
+		update goods_clothing_dict
+		<set>
+			<if test="status != null">status = #{status}, </if>
+			<if test="updateBy != null">update_by = #{updateBy}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="name != null">name = #{name}, </if>
+			<if test="code != null">code = #{code}, </if>
+			<if test="type != null">type = #{type}, </if>
+			<if test="canUpdate != null">can_update = #{canUpdate}, </if>
+			<if test="sort != null">sort = #{sort},</if>
+			<if test="sex != null">sex = #{sex},</if>
+			<if test="priority != null">priority = #{priority},</if>
+			<if test="typeName != null">type_name = #{typeName},</if>
+			<if test="remarks != null">remarks = #{remarks},</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update goods_clothing_dict set status = 1 where id = #{value}
+	</update>
+
+
+    <select id="getTypeList" resultType="String">
+        select DISTINCT type_name from goods_clothing_dict where status = 0
+    </select>
+</mapper>

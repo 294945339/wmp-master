@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.VersionLibraryDao">
+
+    <sql id="versionLibraryDaoJoins">
+        LEFT JOIN goods_specification_sheet AS gss ON gss.id = d.specification_sheet
+    </sql>
+
+	<select id="queryObject" resultType="io.dj.modules.goods.domain.VersionLibraryDomain">
+		select
+		d.*,
+		gss.id AS "specificationSheet.id",
+		gss.name AS "specificationSheet.name"
+		 from goods_version_library d
+		 <include refid="versionLibraryDaoJoins"/>
+		  where d.id = #{value} and d.status = 0
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.goods.domain.VersionLibraryDomain">
+		select
+		d.*,
+		gss.id AS "specificationSheet.id",
+		gss.name AS "specificationSheet.name"
+		from goods_version_library d
+        <include refid="versionLibraryDaoJoins"/>
+        <where>
+			d.status = 0
+			<if test="crmId != null and crmId.trim() != ''">
+				and d.crm_id = #{crmId}
+			</if>
+            <if test="code != null and code.trim() != ''">
+				and d.code like concat('%',#{code},'%')
+            </if>
+		</where>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from goods_version_library where status = 0
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.goods.domain.VersionLibraryDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into goods_version_library
+		(
+			status,
+			create_time,
+			code,
+			old_code,
+			type,
+			crm_id,
+			specification_sheet
+		)
+		values
+		(
+			#{status},
+			#{createTime},
+			#{code},
+			#{oldCode},
+			#{type},
+			#{crmId},
+			#{specificationSheet.id}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.goods.domain.VersionLibraryDomain">
+		update goods_version_library
+		<set>
+			<if test="code != null">code = #{code}, </if>
+			<if test="crmId != null">crm_id = #{crmId},</if>
+            <if test="oldCode != null">old_code = #{oldCode}, </if>
+            <if test="type != null">type = #{type}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="specificationSheet != null"> specification_sheet = #{specificationSheet.id}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update goods_version_library set status = 1 where id = #{value}
+	</update>
+
+	<select id="findNameList" resultType="String">
+        SELECT DISTINCT name FROM goods_version_library WHERE status = '0'
+	</select>
+</mapper>

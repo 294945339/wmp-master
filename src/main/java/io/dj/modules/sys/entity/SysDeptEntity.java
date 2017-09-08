@@ -1,0 +1,124 @@
+package io.dj.modules.sys.entity;
+
+import io.dj.common.base.domain.BaseDomain;
+
+import java.util.List;
+
+
+/**
+ * 部门管理
+ * 
+ * @author chenshun
+ * @email sunlightcs@gmail.com
+ * @date 2017-06-20 15:23:47
+ */
+public class SysDeptEntity extends BaseDomain {
+	private static final long serialVersionUID = 1L;
+	
+	//上级部门ID，一级部门为0
+	private Long parentId;
+	//部门名称
+	private String name;
+	//上级部门名称
+	private String parentName;
+	//排序
+	private Integer orderNum;
+	//部门部门树
+	private Long[] parentIds;
+
+	private String dapId;
+
+	/**
+	 * ztree属性
+	 */
+	private Boolean open;
+
+	private List<?> list;
+
+    private List<String> listIds;
+
+    /**
+	 * 设置：上级部门ID，一级部门为0
+	 */
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
+	}
+	/**
+	 * 获取：上级部门ID，一级部门为0
+	 */
+	public Long getParentId() {
+		return parentId;
+	}
+	/**
+	 * 设置：部门名称
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+	 * 获取：部门名称
+	 */
+	public String getName() {
+		return name;
+	}
+	/**
+	 * 设置：排序
+	 */
+	public void setOrderNum(Integer orderNum) {
+		this.orderNum = orderNum;
+	}
+	/**
+	 * 获取：排序
+	 */
+	public Integer getOrderNum() {
+		return orderNum;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
+	public Boolean getOpen() {
+		return open;
+	}
+
+	public void setOpen(Boolean open) {
+		this.open = open;
+	}
+
+	public List<?> getList() {
+		return list;
+	}
+
+	public void setList(List<?> list) {
+		this.list = list;
+	}
+
+    public Long[] getParentIds() {
+        return parentIds;
+    }
+
+    public void setParentIds(Long[] parentIds) {
+        this.parentIds = parentIds;
+    }
+
+    public String getDapId() {
+        return dapId;
+    }
+
+    public void setDapId(String dapId) {
+        this.dapId = dapId;
+    }
+
+    public List<String> getListIds() {
+        return listIds;
+    }
+
+    public void setListIds(List<String> listIds) {
+        this.listIds = listIds;
+    }
+}

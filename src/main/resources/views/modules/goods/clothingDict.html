@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>服饰字典</title>
+    <script src='../../js/baseLib.js'></script>
+</head>
+<body>
+<div id="djapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.name" @keyup.enter="query" placeholder="名称">
+            </div>
+            <div class="form-group col-sm-2">
+                <template>
+                    <el-select v-model="q.typeName" filterable placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.key"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </template>
+            </div>
+            <a class="btn btn-default" @click="query">查询</a>
+            <a v-if="hasPermission('goods:clothingDict:save')" class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            <a v-if="hasPermission('goods:clothingDict:update')" class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+            <a v-if="hasPermission('goods:clothingDict:delete')" class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">名称</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="clothingDict.name" placeholder="名称"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">性别</div>
+                <div class="col-sm-10">
+                    <template>
+                        <el-radio class="radio" v-model="clothingDict.sex" label="man">男</el-radio>
+                        <el-radio class="radio" v-model="clothingDict.sex" label="woman">女</el-radio>
+                        <el-radio class="radio" v-model="clothingDict.sex" label="neutral">通用</el-radio>
+                    </template>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">代码</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="clothingDict.code" placeholder="代码"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">类型名称</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="clothingDict.typeName" placeholder="类型"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">类型代码</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="clothingDict.type" placeholder="类型"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">排序号</div>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" v-model="clothingDict.sort" placeholder="排序号"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">优先级</div>
+                <div class="col-sm-10">
+                    <input type="number" class="form-control" v-model="clothingDict.priority" placeholder="优先级"/>
+                </div>
+            </div>
+            <div class="form-group" v-if="clothingDict.canUpdate">
+                <div class="col-sm-2 control-label">能否修改</div>
+                <label class="radio-inline">
+                    <input type="radio" name="canUpdate" value="true" v-model="clothingDict.canUpdate"/> 能
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" name="canUpdate" value="false" v-model="clothingDict.canUpdate"/> 不能
+                </label>
+            </div>
+            <div class="form-group" v-else="clothingDict.canUpdate">
+                <div class="col-sm-2 control-label">能否修改</div>
+                <label class="radio-inline">
+                    不能
+                </label>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定" v-if="clothingDict.canUpdate"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="../../js/modules/goods/clothingDict.js"></script>
+</body>
+</html>

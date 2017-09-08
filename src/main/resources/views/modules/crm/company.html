@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>企业客户</title>
+    <script src='../../js/baseLib.js'></script>
+</head>
+<body>
+<div id="djapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.name" @keyup.enter="query" placeholder="公司名称">
+            </div>
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.salesmanName" @keyup.enter="query" placeholder="业务员">
+                <!-- <template>
+                    <el-select v-model="q.typeName" filterable placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.key"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </template> -->
+            </div>
+            <a class="btn btn-default" @click="query">查询</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+</div>
+<script src="../../js/modules/crm/company.js"></script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.crm.dao.OrderDao">
+
+	<resultMap id="orderMap" type="io.dj.modules.crm.domain.OrderDomain">
+		<id column="id" property="id"/>
+		<result column="customer_ids" property="OrderNameListIds" javaType="long" typeHandler="io.dj.common.utils.ArrayTypeHandler"/>
+	</resultMap>
+
+	<sql id="orderJoins">
+		LEFT JOIN crm_company AS cc ON cc.id = d.company
+	</sql>
+
+	<sql id="orderColumns">
+		d.id,
+		d.crm_id AS crmId,
+		d.original_no AS originalNo,
+		d.notice_no AS  noticeNo,
+		d.type,
+		d.apply_time AS applyTime,
+		d.measure_time AS measureTime,
+		d.salesman_name AS salesmanName,
+		d.salesman_phone AS salesmanPhone,
+		d.contacts_name AS contactsName,
+		d.contacts_phone AS contactsPhone,
+		d.company AS "company.id",
+		d.man_num AS manNum,
+		d.woman_num AS womanNum,
+		d.man_config AS manConfig,
+		d.woman_config AS womanConfig,
+		d.deliver_time AS deliverTime,
+		d.measure_type AS measureType,
+		d.packing_type AS packingType,
+		d.pack_type AS packType,
+		cc.crm_id AS "company.crmId",
+		cc.name AS "company.name"
+	</sql>
+
+	<select id="queryObject" resultMap="orderMap">
+		select
+		<include refid="orderColumns"/>
+		from crm_order d
+        <include refid="orderJoins"/>
+        where d.id = #{value} and d.status = 0
+	</select>
+
+	<select id="queryList" resultMap="orderMap">
+		select
+		<include refid="orderColumns"/>
+		from crm_order d
+        <include refid="orderJoins"/>
+        <where>
+			d.status = 0
+			<if test="crmId != null and crmId.trim() != ''">
+				and d.crm_id = #{crmId}
+			</if>
+			<if test="noticeNo != null and noticeNo.trim() != ''">
+				and d.notice_no like concat('%',#{noticeNo},'%')
+			</if>
+			<if test="salesmanName != null and salesmanName.trim() != ''">
+				and d.salesman_name like concat('%',#{salesmanName},'%')
+			</if>
+		</where>
+		order by d.apply_time desc ,d.id
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from crm_order where status = 0
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.crm.domain.OrderDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into crm_order
+		(
+			status,
+			create_time,
+			original_no,
+			notice_no,
+			type,
+			apply_time,
+			measure_time,
+			salesman_name,
+			salesman_phone,
+			contacts_name,
+			contacts_phone,
+			company,
+			man_num,
+			woman_num,
+			man_config,
+			woman_config,
+			deliver_time,
+			measure_type,
+			packing_type,
+			pack_type,
+			crm_id
+		)
+		values
+		(
+			#{status},
+			#{createTime},
+			#{originalNo},
+			#{noticeNo},
+			#{type},
+			#{applyTime},
+			#{measureTime},
+			#{salesmanName},
+			#{salesmanPhone},
+			#{contactsName},
+			#{contactsPhone},
+			#{company.id},
+			#{manNum},
+			#{womanNum},
+			#{manConfig},
+			#{womanConfig},
+			#{deliverTime},
+			#{measureType},
+			#{packingType},
+			#{packType},
+			#{crmId}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.crm.domain.OrderDomain">
+		update crm_order
+		<set>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="originalNo != null">original_no = #{originalNo}, </if>
+			<if test="noticeNo != null">notice_no = #{noticeNo}, </if>
+			<if test="type != null">type = #{type}, </if>
+			<if test="applyTime != null">apply_time = #{applyTime}, </if>
+			<if test="measureTime != null">measure_time = #{measureTime}, </if>
+			<if test="salesmanName != null">salesman_name = #{salesmanName}, </if>
+			<if test="salesmanPhone != null">salesman_phone = #{salesmanPhone},</if>
+            <if test="contactsName != null">contacts_name = #{contactsName}, </if>
+            <if test="contactsPhone != null">contacts_phone = #{contactsPhone}, </if>
+            <if test="company.id != null">company = #{company.id}, </if>
+            <if test="manNum != null">man_num = #{manNum}, </if>
+            <if test="womanNum != null">woman_num = #{womanNum}, </if>
+            <if test="manConfig != null">man_config = #{manConfig}, </if>
+			<if test="womanConfig != null">woman_config = #{womanConfig}, </if>
+			<if test="deliverTime != null">deliver_time = #{deliverTime}, </if>
+			<if test="measureType != null">measure_type = #{measureType}, </if>
+			<if test="packingType != null">packing_type = #{packingType}, </if>
+			<if test="packType != null">pack_type = #{packType}, </if>
+			<if test="crmId != null">crm_id = #{crmId}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update crm_order set status = 1 where id = #{value}
+	</update>
+
+	<select id="findNameList" resultType="String">
+        SELECT DISTINCT name FROM crm_order WHERE status = '0'
+	</select>
+</mapper>

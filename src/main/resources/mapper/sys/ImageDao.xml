@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.sys.dao.ImageDao">
+
+	<select id="queryObject" resultType="io.dj.modules.sys.entity.ImageDomain">
+		select * from sys_image where id = #{value} and status = 0
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.sys.entity.ImageDomain">
+		select d.*
+		from sys_image d
+		<where>
+			d.status = 0
+		</where>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+		<if test="offset = null and limit = null">
+			ORDER BY d.sort
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from sys_image where status = 0
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.sys.entity.ImageDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into sys_image
+		(
+			status,
+			code,
+			sort,
+			create_time,
+			create_by
+		)
+		values
+		(
+			#{status},
+			#{code},
+			#{sort},
+			#{createTime},
+			#{createBy}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.sys.entity.ImageDomain">
+		update sys_image
+		<set>
+			<if test="status != null">status = #{status}, </if>
+			<if test="code != null">code = #{code}, </if>
+            <if test="sort != null">sort = #{sort}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="updateBy != null">update_by = #{updateBy}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update sys_image set status = 1 where id = #{value}
+	</update>
+
+</mapper>

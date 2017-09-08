@@ -1,0 +1,18 @@
+document.writeln("<meta charset=\'UTF-8\'>");
+document.writeln("<meta http-equiv=\'X-UA-Compatible\' content=\'IE=edge\'>");
+document.writeln("<meta content=\'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\' name=\'viewport\'>");
+document.writeln("<link rel=\'stylesheet\' href=\'../../css/bootstrap.min.css\'>");
+document.writeln("<link rel=\'stylesheet\' href=\'../../css/font-awesome.min.css\'>");
+document.writeln("<link rel=\'stylesheet\' href=\'../../plugins/jqgrid/ui.jqgrid-bootstrap.css\'>");
+document.writeln("<link rel=\'stylesheet\' href=\'../../plugins/ztree/css/metroStyle/metroStyle.css\'>");
+document.writeln("<link rel=\'stylesheet\' href=\'../../css/main.css\'>");
+document.writeln("<link rel=\'stylesheet\' href=\'../../plugins/element-ui/lib/theme-default/index.css\'>");
+document.writeln("<script src=\'../../libs/jquery.min.js\'></script>");
+document.writeln("<script src=\'../../plugins/layer/layer.js\'></script>");
+document.writeln("<script src=\'../../libs/bootstrap.min.js\'></script>");
+document.writeln("<script src=\'../../libs/vue.min.js\'></script>");
+document.writeln("<script src=\'../../plugins/jqgrid/grid.locale-cn.js\'></script>");
+document.writeln("<script src=\'../../plugins/jqgrid/jquery.jqGrid.min.js\'></script>");
+document.writeln("<script src=\'../../plugins/ztree/jquery.ztree.all.min.js\'></script>");
+document.writeln("<script src=\'../../js/common.js\'></script>");
+document.writeln("<script src=\'../../plugins/element-ui/lib/index.js\'></script>");

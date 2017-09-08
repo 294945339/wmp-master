@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.GoodsCatalogDao">
+
+	<select id="queryObject" resultType="io.dj.modules.goods.domain.GoodsCatalogDomain">
+		select * from goods_goods_catalog where id = #{value} and status = 0
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.goods.domain.GoodsCatalogDomain">
+		select d.*
+		from goods_goods_catalog d
+		<where>
+			d.status = 0
+			<if test="erpId != null and erpId.trim() != ''">
+				and d.erp_id = #{erpId}
+			</if>
+            <if test="name != null and name.trim() != ''">
+				and d.name like concat('%',#{name},'%')
+            </if>
+            <if test="code != null and code.trim() != ''">
+                and d.code like concat('%',#{code},'%')
+            </if>
+		</where>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from goods_goods_catalog where status = 0
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.goods.domain.GoodsCatalogDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into goods_goods_catalog
+		(
+			status,
+			code,
+			erp_id,
+			name,
+			unit,
+			type,
+			type_name,
+			create_time
+		)
+		values
+		(
+			#{status},
+			#{code},
+			#{erpId},
+			#{name},
+			#{unit},
+			#{type},
+			#{typeName},
+			#{createTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.goods.domain.GoodsCatalogDomain">
+		update goods_goods_Catalog
+		<set>
+			<if test="status != null">status = #{status}, </if>
+			<if test="code != null">code = #{code}, </if>
+			<if test="erpId != null">erp_id = #{erpId},</if>
+            <if test="unit != null">unit = #{unit}, </if>
+            <if test="name != null">name = #{name}, </if>
+            <if test="type != null">type = #{type}, </if>
+            <if test="typeName != null">type_name = #{typeName}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update goods_goods_Catalog set status = 1 where id = #{value}
+	</update>
+
+	<select id="findNameList" resultType="String">
+        SELECT DISTINCT name FROM goods_goods_Catalog WHERE status = '0'
+	</select>
+</mapper>

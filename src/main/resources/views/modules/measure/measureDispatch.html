@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>量体派遣单</title>
+    <script src='../../js/baseLib.js'></script>
+    <link rel="stylesheet" href="../../plugins/bootstrap-datepicker/bootstrap-datepicker3.min.css">
+    <script src="../../plugins/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="../../plugins/bootstrap-datepicker/bootstrap-datepicker.zh-CN.min.js"></script>
+</head>
+<body>
+<div id="djapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.code" @keyup.enter="query" placeholder="派遣单号">
+            </div>
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="q.companyName" @keyup.enter="query" placeholder="量体单位">
+            </div>
+            <div class="form-group" style="width:120px;margin-right:15px; float:left">
+                <select class="form-control" v-model="q.taskStatus">
+					<option :value="item.value" v-for="item in taskStatus">{{item.text}}</option>
+                </select>
+            </div>
+            <div class="form-group" style="width:130px;margin-right:15px; float:left">
+                <input class="form-control" id="startTime" placeholder="开始日期"> 
+            </div>
+            <div class="form-group" style="width:130px;margin-right:15px; float:left">
+                <input class="form-control" id="endTime" placeholder="结束日期"> 
+            </div>
+               <a class="btn btn-default" @click="query">查询</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+</div>
+<script src="../../js/modules/measure/measureDispatch.js"></script>
+<script>
+$(function(){
+    $('#startTime').datepicker({language: "zh-CN",format:"yyyy-mm-dd"});
+    $('#endTime').datepicker({language: "zh-CN",format:"yyyy-mm-dd"});
+})
+</script>
+</body>
+</html>

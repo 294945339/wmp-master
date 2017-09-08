@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.GoodsTypeDao">
+
+	<select id="queryObject" resultType="io.dj.modules.goods.domain.GoodsTypeDomain">
+		select * from goods_goods_type where id = #{value} and status = 0
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.goods.domain.GoodsTypeDomain">
+		select d.*
+		from goods_goods_type d
+		<where>
+			d.status = 0
+			<if test="crmId != null and crmId.trim() != ''">
+				and d.crm_id = #{crmId}
+			</if>
+			<if test="crmName != null and crmName.trim() != ''">
+                and d.crm_name like concat('%',#{crmName},'%')
+            </if>
+		</where>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from goods_goods_type where status = 0
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.goods.domain.GoodsTypeDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into goods_goods_type
+		(
+			status,
+			code,
+			crm_id,
+			crm_name,
+			unit,
+			erp_id,
+			erp_name,
+			type_str,
+			create_time
+		)
+		values
+		(
+			#{status},
+			#{code},
+			#{crmId},
+			#{crmName},
+			#{unit},
+			#{erpId},
+			#{erpName},
+			#{typeStr},
+			#{createTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.goods.domain.GoodsTypeDomain">
+		update goods_goods_type
+		<set>
+			<if test="status != null">status = #{status}, </if>
+			<if test="code != null">code = #{code}, </if>
+			<if test="crmId != null">crm_id = #{crmId},</if>
+            <if test="crmName != null">crm_name = #{crmName},</if>
+            <if test="unit != null">unit = #{unit}, </if>
+            <if test="erpId != null">erp_id = #{erpId}, </if>
+            <if test="erpName != null">erp_name = #{erpName}, </if>
+            <if test="typeStr != null">type_str = #{typeStr}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update goods_goods_type set status = 1 where id = #{value}
+	</update>
+
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.SpecificationSheetRelationDao">
+
+    <resultMap id="SpecificationSheetRelationMap" type="io.dj.modules.goods.domain.SpecificationSheetRelationDomain">
+        <id column="id" property="id"/>
+        <result column="body_value_ids" property="bodyValueIds" javaType="long" typeHandler="io.dj.common.utils.ArrayTypeHandler"/>
+    </resultMap>
+
+    <sql id="SpecificationSheetRelationColumns">
+        d.id,
+        d.crm_id AS crmId,
+        d.code,
+        d.name,
+        d.type,
+        d.size,
+        d.status,
+        d.specification_sheet,
+        d.body_value_ids,
+        d.sort
+    </sql>
+
+    <select id="queryObject" resultMap="SpecificationSheetRelationMap">
+        select
+        <include refid="SpecificationSheetRelationColumns"/>
+        from goods_specification_sheet_relation AS d where d.id = #{value} and d.status = 0
+        order by d.sort
+    </select>
+
+    <select id="queryList" resultMap="SpecificationSheetRelationMap">
+        select
+        <include refid="SpecificationSheetRelationColumns"/>
+        from goods_specification_sheet_relation d
+        <where>
+            d.status = 0
+            <if test="specificationSheet != null and specificationSheet != null">
+                and d.specification_sheet = #{specificationSheet}
+            </if>
+        </where>
+        <if test="offset != null and limit != null">
+            limit #{limit} offset #{offset}
+        </if>
+        order by d.sort
+    </select>
+
+    <select id="queryTotal" parameterType="map" resultType="int">
+        select count(*) from goods_specification_sheet_relation where status = 0
+    </select>
+
+    <insert id="save" parameterType="io.dj.modules.goods.domain.SpecificationSheetRelationDomain" useGeneratedKeys="true" keyProperty="id">
+        insert into goods_specification_sheet_relation
+        (
+        status,
+        create_time,
+        code,
+        name,
+        type,
+        size,
+        crm_id,
+        specification_sheet,
+        sort,
+        body_value_ids
+        )
+        values
+        (
+        #{status},
+        #{createTime},
+        #{code},
+        #{name},
+        #{type},
+        #{size},
+        #{crmId},
+        #{specificationSheet},
+        #{sort},
+        #{bodyValueIds, jdbcType=ARRAY, typeHandler=io.dj.common.utils.ArrayTypeHandler}
+        )
+    </insert>
+
+    <update id="update" parameterType="io.dj.modules.goods.domain.SpecificationSheetRelationDomain">
+        update goods_specification_sheet_relation
+        <set>
+            <if test="name != null">name = #{name}, </if>
+            <if test="type != null">type = #{type}, </if>
+            <if test="size != null">size = #{size}, </if>
+            <if test="crmId != null">crm_id = #{crmId}, </if>
+            <if test="sort != null">sort = #{sort}, </if>
+            <if test="specificationSheet != null">specification_sheet = #{specificationSheet}, </if>
+            <if test="bodyValueIds != null">body_value_ids =#{bodyValueIds, jdbcType=ARRAY, typeHandler=io.dj.common.utils.ArrayTypeHandler}, </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="delete">
+        update goods_specification_sheet_relation set status = 1 where id = #{value}
+    </update>
+
+</mapper>

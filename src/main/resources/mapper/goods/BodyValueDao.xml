@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.BodyValueDao">
+
+	<sql id="BodyValueJoins">
+		LEFT JOIN goods_clothing_dict AS gcd ON gcd.id = d.clothing_dict
+	</sql>
+
+	<select id="queryObject" resultType="io.dj.modules.goods.domain.BodyValueDomain">
+		select
+		d,*,
+		gcd.id AS "clothingDict.id",
+        gcd.name as "clothingDict.name"
+		 from goods_body_value d
+        <include refid="BodyValueJoins"/>
+        where d.id = #{value}
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.goods.domain.BodyValueDomain">
+		selectd,*,
+		gcd.id AS "clothingDict.id",
+		gcd.name as "clothingDict.name"
+        from goods_body_value d
+        <include refid="BodyValueJoins"/>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from goods_body_value
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.goods.domain.BodyValueDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into goods_body_value
+		(
+			create_time,
+			create_by,
+			clothing_dict,
+			numerical_value
+		)
+		values
+		(
+			#{createTime},
+			#{createBy},
+			#{clothingDict.id},
+			#{numericalValue}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.goods.domain.BodyValueDomain">
+		update goods_body_value
+		<set>
+			<if test="updateBy != null">update_by = #{updateBy}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+			<if test="clothingDict != null">clothing_dict = #{clothingDict.id}, </if>
+			<if test="numericalValue != null">numerical_value = #{numericalValue}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="delete">
+		delete from goods_body_value where id = #{id}
+	</delete>
+
+</mapper>

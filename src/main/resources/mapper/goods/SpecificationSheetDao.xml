@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.goods.dao.SpecificationSheetDao">
+
+    <sql id="SpecificationSheetColumns">
+		d.id,
+        d.crm_id AS crmId,
+        d.code,
+        d.name,
+        d.sex,
+        d.type,
+        d.version_name AS versionName,
+        d.can_use AS canUse,
+        d.file_code AS fileCode
+    </sql>
+
+	<select id="queryObject" resultType="io.dj.modules.goods.domain.SpecificationSheetDomain">
+		select
+        <include refid="SpecificationSheetColumns"/>
+        from goods_specification_sheet d where d.id = #{value} and d.status = 0
+	</select>
+
+	<select id="queryList" resultType="io.dj.modules.goods.domain.SpecificationSheetDomain">
+		select
+        <include refid="SpecificationSheetColumns"/>
+		from goods_specification_sheet d
+		<where>
+			d.status = '0'
+			<if test="crmId != null and crmId != null">
+				and d.crm_id = #{crmId}
+			</if>
+			<if test="code != null and code != null">
+				and d.code = #{code}
+			</if>
+            <if test="name != null and name != null">
+                and d.name like concat('%',#{name},'%')
+            </if>
+		</where>
+		<if test="offset != null and limit != null">
+			limit #{limit} offset #{offset}
+		</if>
+	</select>
+
+	<select id="queryTotal" parameterType="map" resultType="int">
+		select count(*) from goods_specification_sheet where status = '0'
+		<if test="key != null and key.trim() != ''">
+			and key like concat('%',#{key},'%')
+		</if>
+	</select>
+
+	<insert id="save" parameterType="io.dj.modules.goods.domain.SpecificationSheetDomain" useGeneratedKeys="true" keyProperty="id">
+		insert into goods_specification_sheet
+		(
+			status,
+			code,
+			crm_id,
+			name,
+			sex,
+			type,
+			version_name,
+			can_use,
+			file_code,
+			create_time
+		)
+		values
+		(
+			#{status},
+			#{code},
+			#{crmId},
+			#{name},
+			#{sex},
+			#{type},
+			#{versionName},
+			#{canUse},
+			#{fileCode},
+			#{createTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="io.dj.modules.goods.domain.SpecificationSheetDomain">
+		update goods_specification_sheet
+		<set>
+			<if test="status != null">status = #{status}, </if>
+			<if test="code != null">code = #{code}, </if>
+			<if test="crmId != null">crm_id = #{crmId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex}, </if>
+            <if test="type != null">type = #{type}, </if>
+            <if test="versionName != null">version_name = #{versionName}, </if>
+            <if test="canUse != null">can_use = #{canUse}, </if>
+            <if test="fileCode != null">file_code = #{fileCode}, </if>
+			<if test="updateTime != null">update_time = #{updateTime}, </if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<update id="delete">
+		update goods_specification_sheet set status = 1 where id = #{value}
+	</update>
+
+</mapper>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.dj.modules.measure.dao.FilingRuleDao">
+
+    <sql id="FilingRuleJoins">
+        LEFT JOIN goods_goods_type AS ggt ON ggt.id = d.goods_type
+        LEFT JOIN goods_clothing_dict AS ggtd_first ON ggtd_first.id = d.first
+        LEFT JOIN goods_clothing_dict AS ggtd_second ON ggtd_second.id = d.second
+        LEFT JOIN goods_clothing_dict AS ggtd_third ON ggtd_third.id = d.third
+        LEFT JOIN goods_clothing_dict AS ggtd_fourth ON ggtd_fourth.id = d.fourth
+    </sql>
+
+    <sql id="FilingRuleSearch">
+        d.*,
+        d.goods_type AS "goodsType.id",
+        ggt.name AS "goodsType.crmName",
+        d.first AS "firtst.id",
+        ggtd_first.name AS "first.name",
+        ggtd_second.name AS "second.name",
+        d.second AS "second.id",
+        ggtd_third.name AS "third.name",
+        d.third AS "third.id",
+        ggtd_fourth.name AS "fourth.name",
+        d.fourth AS "fourth.id"
+    </sql>
+
+    <select id="queryObject" resultType="io.dj.modules.measure.domain.FilingRuleDomain">
+        select
+        <include refid="FilingRuleSearch"/>
+        from measure_filing_rule d
+        <include refid="FilingRuleJoins"/>
+        where d.id = #{value} and d.status = 0
+    </select>
+
+    <select id="queryList" resultType="io.dj.modules.measure.domain.FilingRuleDomain">
+        select
+        <include refid="FilingRuleSearch"/>
+        from measure_filing_rule d
+        <include refid="FilingRuleJoins"/>
+        <where>
+            d.status = 0
+        </where>
+        <if test="offset != null and limit != null">
+            limit #{limit} offset #{offset}
+        </if>
+    </select>
+
+    <select id="queryTotal" parameterType="map" resultType="int">
+        select count(*) from measure_filing_rule where status = 0
+        <if test="key != null and key.trim() != ''">
+            and key like concat('%',#{key},'%')
+        </if>
+    </select>
+
+    <insert id="save" parameterType="io.dj.modules.measure.domain.FilingRuleDomain" useGeneratedKeys="true" keyProperty="id">
+        insert into measure_filing_rule
+        (
+        status,
+        goods_type,
+        first,
+        second,
+        create_time,
+        third,
+        fourth,
+        create_by
+        )
+        values
+        (
+        #{status},
+        #{goodsType.id},
+        #{first.id},
+        #{second.id},
+        #{createTime},
+        #{third.id},
+        #{fourth.id},
+        #{createBy}
+        )
+    </insert>
+
+    <update id="update" parameterType="io.dj.modules.measure.domain.FilingRuleDomain">
+        update measure_filing_rule
+        <set>
+            <if test="code != null">code = #{code}, </if>
+            <if test="goodsType != null">goods_type = #{goodsType.id},</if>
+            <if test="updateTime != null">update_time = #{updateTime}, </if>
+            <if test="first != null">first = #{first.id}, </if>
+            <if test="second != null">second = #{second.id}, </if>
+            <if test="third != null">third = #{third.id}, </if>
+            <if test="fourth != null">fourth = #{fourth.id}, </if>
+            <if test="updateBy != null">update_by = #{updateBy}, </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="delete">
+        update measure_filing_rule set status = 1 where id = #{value}
+    </update>
+
+</mapper>

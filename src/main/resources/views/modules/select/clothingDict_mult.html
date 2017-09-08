@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>部位选择</title>
+    <script src='../../js/baseLib.js'></script>
+</head>
+<body>
+<div id="djapp" v-cloak>
+    <div class="select-title">商品类别选择</div>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group" style="width:200px; float:left;">
+                <input type="text" class="form-control" v-model="q.name" @keyup.enter="query" placeholder="名称">
+            </div>
+            <div class="form-group col-sm-1" style="width:200px; ">
+                <template>
+                    <el-select v-model="q.typeName" filterable placeholder="请选择">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.key"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                </template>
+            </div>
+            <a class="btn btn-default" @click="query">查询</a>
+            <a class="btn btn-primary" onclick="select_qd()">确定</a>
+            <a class="btn btn-warning" onclick="select_qx()">取消</a>
+        </div>
+
+        <div class="transfer">
+            <div class="transfer_left">
+                <table id="jqGrid"></table>
+                <div id="jqGridPager"></div>
+            </div>
+            <div class="transfer_center">
+                <button class="btn btn-default" onclick="moveR()">></button><br>
+                <button class="btn btn-default" onclick="moveL()"><</button><br><br>
+                <button class="btn btn-default" onclick="moveRall()">>></button><br>
+                <button class="btn btn-default" onclick="moveLall()"><<</button>
+            </div>
+            <div class="transfer_right">
+                <table id="jqGrid2"></table>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.transfer{ clear:both; }
+.transfer_left{ width: 350px; float: left }
+.transfer_center{ float: left; padding:10px; padding-top:100px; text-align: center;}
+.transfer_right{ width:350px;float: left }
+</style>
+<script src="../../js/modules/select/clothingDict_mult.js"></script>
+</body>
+</html>
